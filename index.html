@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>John Orellana — Desarrollador web full-stack</title>
+  <meta name="description" content="Portafolio de John Orellana: productos web construidos de punta a punta — ML explicable, SaaS multi-tenant, procesamiento multimedia y más. Guayaquil, Ecuador.">
+  <meta property="og:title" content="John Orellana — Desarrollador web full-stack">
+  <meta property="og:description" content="Productos web construidos de punta a punta: ML explicable, SaaS multi-tenant, procesamiento multimedia.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#f3eee2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#161410" media="(prefers-color-scheme: dark)">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
+  <script>
+    /* arranque de tema e idioma antes del primer render (sin parpadeo) */
+    (function () {
+      var d = document.documentElement, q = new URLSearchParams(location.search);
+      d.classList.add("js");
+      if (q.get("fx") === "off") d.classList.add("no-fx");
+      var th = q.get("theme");
+      try { th = th || localStorage.getItem("jo-theme"); } catch (e) {}
+      if (th !== "dark" && th !== "light")
+        th = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      d.dataset.theme = th;
+      var lg = q.get("lang");
+      try { lg = lg || localStorage.getItem("jo-lang"); } catch (e) {}
+      if (lg !== "es" && lg !== "en")
+        lg = (navigator.language || "es").slice(0, 2) === "es" ? "es" : "en";
+      d.lang = lg;
+    })();
+  </script>
+
+  <link rel="stylesheet" href="css/styles.css">
+  <noscript><style>.carousel, .vignette, .hero-diagram { display: none; }</style></noscript>
+</head>
+<body id="top">
+  <a class="skip-link" href="#main" data-i18n="a11y.skip">Saltar al contenido</a>
+
+  <!-- ============ MASTHEAD ============ -->
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="brand" href="#top">
+        <span class="brand-mark">J·O</span>
+        <span class="brand-name">John Orellana</span>
+      </a>
+      <nav class="mainnav" data-a11y="a11y.nav">
+        <a href="#proyectos" data-i18n="nav.projects">Proyectos</a>
+        <a href="#stack" data-i18n="nav.stack">Stack</a>
+        <a href="#experiencia" data-i18n="nav.exp">Trayectoria</a>
+        <a href="#contacto" data-i18n="nav.contact">Contacto</a>
+      </nav>
+      <div class="controls">
+        <div class="lang-switch" role="group" data-a11y="a11y.lang">
+          <button type="button" data-lang-btn="es" aria-pressed="true">ES</button>
+          <span class="sep" aria-hidden="true">/</span>
+          <button type="button" data-lang-btn="en" aria-pressed="false">EN</button>
+        </div>
+        <button type="button" class="theme-btn" id="themeBtn" data-a11y="a11y.theme">
+          <svg viewBox="0 0 16 16" aria-hidden="true">
+            <g class="sun">
+              <circle cx="8" cy="8" r="3.2"/>
+              <path d="M8 0.8v2.2M8 13v2.2M0.8 8h2.2M13 8h2.2M2.9 2.9l1.5 1.5M11.6 11.6l1.5 1.5M13.1 2.9l-1.5 1.5M4.4 11.6l-1.5 1.5"/>
+            </g>
+            <path class="moon" d="M13.6 9.8A6.2 6.2 0 0 1 6.2 2.4a6.2 6.2 0 1 0 7.4 7.4z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ============ HERO ============ -->
+    <section class="hero wrap">
+      <p class="kicker mono" data-i18n="hero.kicker">Expediente profesional · Guayaquil, Ecuador</p>
+      <h1 class="hero-name">John <em>Orellana</em></h1>
+      <p class="hero-lede" data-i18n-html="hero.lede"></p>
+
+      <div class="hero-grid">
+        <dl class="spec-list">
+          <div class="spec-row">
+            <dt class="mono" data-i18n="hero.s1k"></dt><span class="dots"></span>
+            <dd data-i18n="hero.s1v"></dd>
+          </div>
+          <div class="spec-row">
+            <dt class="mono" data-i18n="hero.s2k"></dt><span class="dots"></span>
+            <dd data-i18n="hero.s2v"></dd>
+          </div>
+          <div class="spec-row">
+            <dt class="mono" data-i18n="hero.s3k"></dt><span class="dots"></span>
+            <dd data-i18n="hero.s3v"></dd>
+          </div>
+          <div class="spec-row">
+            <dt class="mono" data-i18n="hero.s4k"></dt><span class="dots"></span>
+            <dd><span class="live" aria-hidden="true"></span><span data-i18n="hero.s4v"></span></dd>
+          </div>
+          <div class="spec-row">
+            <dt class="mono" data-i18n="hero.s5k"></dt><span class="dots"></span>
+            <dd id="clockRow"></dd>
+          </div>
+        </dl>
+        <div class="hero-diagram">
+          <div class="vignette-stage" data-vignette="hero"></div>
+        </div>
+      </div>
+
+      <div class="hero-ctas">
+        <a class="btn btn-solid" href="#proyectos"><span data-i18n="hero.cta1"></span> <span class="arr">↓</span></a>
+        <a class="btn btn-ghost" data-link="email" data-i18n="hero.cta2"></a>
+        <a class="btn btn-ghost" data-link="cv" data-i18n="hero.cv"></a>
+      </div>
+
+      <svg class="stamp" viewBox="0 0 150 150" aria-hidden="true">
+        <circle cx="75" cy="75" r="72" stroke-width="1.5"/>
+        <circle cx="75" cy="75" r="50" class="in" stroke-width="1"/>
+        <g class="ring">
+          <path id="stampPath" d="M 75 14 A 61 61 0 1 1 74.99 14" fill="none"/>
+          <text><textPath href="#stampPath">GUAYAQUIL · ECUADOR · WEB FULL-STACK · MMXXV · </textPath></text>
+        </g>
+        <text x="75" y="85" text-anchor="middle" class="stamp-mono">J·O</text>
+      </svg>
+    </section>
+
+    <!-- ============ SEC. 01 — PERFIL ============ -->
+    <section id="sobre-mi" class="section">
+      <div class="wrap">
+        <div class="rule-double"></div>
+        <header class="sec-head rv">
+          <span class="sec-no mono">Sec. 01</span>
+          <h2 data-i18n="sec.about">Perfil</h2>
+        </header>
+
+        <div class="about-grid rv">
+          <div>
+            <p class="lead" data-i18n="about.p1"></p>
+            <p data-i18n="about.p2"></p>
+          </div>
+          <dl class="spec-list">
+            <div class="spec-row">
+              <dt class="mono" data-i18n="about.d1k"></dt><span class="dots"></span>
+              <dd data-i18n="about.d1v"></dd>
+            </div>
+            <div class="spec-row">
+              <dt class="mono" data-i18n="about.d2k"></dt><span class="dots"></span>
+              <dd data-i18n="about.d2v"></dd>
+            </div>
+            <div class="spec-row">
+              <dt class="mono" data-i18n="about.d3k"></dt><span class="dots"></span>
+              <dd data-i18n="about.d3v"></dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="folio mono">
+          <span data-i18n="folio">Folio</span>
+          <span>01 · <span data-i18n="sec.about">Perfil</span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SEC. 02 — PROYECTOS ============ -->
+    <section id="proyectos" class="section">
+      <div class="wrap">
+        <div class="rule-double"></div>
+        <header class="sec-head rv">
+          <span class="sec-no mono">Sec. 02</span>
+          <h2 data-i18n="sec.projects">Proyectos</h2>
+          <p class="sec-intro" data-i18n="sec.projectsIntro"></p>
+        </header>
+
+        <!-- CASO 01 · PREDISANA -->
+        <article class="case rv" id="caso-predisana" style="--case:#17756b; --case-dk:#3caa9d">
+          <div class="case-head">
+            <div class="case-no">
+              <span class="lbl mono" data-i18n="caseLbl">Caso</span>
+              <strong>Nº 01</strong>
+            </div>
+            <div class="case-title">
+              <h3 data-i18n="cases.predisana.name">Predisana</h3>
+              <p class="case-tag" data-i18n="cases.predisana.tag"></p>
+            </div>
+            <dl class="case-meta">
+              <div><dt data-i18n="meta_labels.year"></dt><dd data-i18n="cases.predisana.year"></dd></div>
+              <div><dt data-i18n="meta_labels.role"></dt><dd data-i18n="cases.predisana.role"></dd></div>
+              <div><dt data-i18n="meta_labels.type"></dt><dd data-i18n="cases.predisana.type"></dd></div>
+              <div><dt data-i18n="meta_labels.status"></dt><dd data-i18n="cases.predisana.status"></dd></div>
+            </dl>
+          </div>
+          <div class="case-body">
+            <div class="case-copy">
+              <p data-i18n="cases.predisana.p1"></p>
+              <p data-i18n="cases.predisana.p2"></p>
+              <ul class="case-notes" data-i18n-list="cases.predisana.notes"></ul>
+              <p class="case-origin" data-i18n="cases.predisana.origin"></p>
+              <ul class="chips">
+                <li>Python</li><li>Flask</li><li>scikit-learn</li><li>LightGBM</li><li>SHAP</li>
+                <li>SDV · CTGAN</li><li>SQLAlchemy</li><li>React 19</li><li>Vite</li>
+                <li>Recharts</li><li>PostgreSQL</li>
+              </ul>
+              <div class="case-links">
+                <a class="pin-link" data-link="predisana.demo"><span data-i18n="links.demo"></span> <span class="arr">↗</span></a>
+                <a class="pin-link" data-link="predisana.code"><span data-i18n="links.code"></span> <span class="arr">↗</span></a>
+              </div>
+            </div>
+            <div class="case-media">
+              <div class="carousel" data-carousel="predisana"></div>
+              <figure class="vignette">
+                <figcaption class="vignette-head mono">
+                  <span class="pulse" aria-hidden="true"></span>
+                  <span data-i18n="vignette.badge"></span>
+                  <span class="vtitle" data-i18n="cases.predisana.vig"></span>
+                </figcaption>
+                <div class="vignette-stage" data-vignette="predisana"></div>
+              </figure>
+            </div>
+          </div>
+        </article>
+
+        <!-- CASO 02 · HARDWARE CATALOG SAAS -->
+        <article class="case rv" id="caso-saas" style="--case:#2b55c4; --case-dk:#6b8ef2">
+          <div class="case-head">
+            <div class="case-no">
+              <span class="lbl mono" data-i18n="caseLbl">Caso</span>
+              <strong>Nº 02</strong>
+            </div>
+            <div class="case-title">
+              <h3 data-i18n="cases.saas.name">Hardware Catalog SaaS</h3>
+              <p class="case-tag" data-i18n="cases.saas.tag"></p>
+            </div>
+            <dl class="case-meta">
+              <div><dt data-i18n="meta_labels.year"></dt><dd data-i18n="cases.saas.year"></dd></div>
+              <div><dt data-i18n="meta_labels.role"></dt><dd data-i18n="cases.saas.role"></dd></div>
+              <div><dt data-i18n="meta_labels.type"></dt><dd data-i18n="cases.saas.type"></dd></div>
+              <div><dt data-i18n="meta_labels.status"></dt><dd data-i18n="cases.saas.status"></dd></div>
+            </dl>
+          </div>
+          <div class="case-body">
+            <div class="case-copy">
+              <p data-i18n="cases.saas.p1"></p>
+              <p data-i18n="cases.saas.p2"></p>
+              <ul class="case-notes" data-i18n-list="cases.saas.notes"></ul>
+              <p class="case-origin" data-i18n="cases.saas.origin"></p>
+              <ul class="chips">
+                <li>Laravel 13</li><li>PHP 8.3</li><li>Sanctum</li><li>MySQL</li><li>React 19</li>
+                <li>TypeScript</li><li>TanStack Query</li><li>Zustand</li><li>Cloudflare R2</li>
+              </ul>
+              <div class="case-links">
+                <a class="pin-link" data-link="saas.demo"><span data-i18n="links.demo"></span> <span class="arr">↗</span></a>
+                <a class="pin-link" data-link="saas.code"><span data-i18n="links.code"></span> <span class="arr">↗</span></a>
+              </div>
+            </div>
+            <div class="case-media">
+              <div class="carousel" data-carousel="saas"></div>
+              <figure class="vignette">
+                <figcaption class="vignette-head mono">
+                  <span class="pulse" aria-hidden="true"></span>
+                  <span data-i18n="vignette.badge"></span>
+                  <span class="vtitle" data-i18n="cases.saas.vig"></span>
+                </figcaption>
+                <div class="vignette-stage" data-vignette="saas"></div>
+              </figure>
+            </div>
+          </div>
+        </article>
+
+        <!-- CASO 03 · MEDIORA -->
+        <article class="case rv" id="caso-mediora" style="--case:#b96a1a; --case-dk:#e0913c">
+          <div class="case-head">
+            <div class="case-no">
+              <span class="lbl mono" data-i18n="caseLbl">Caso</span>
+              <strong>Nº 03</strong>
+            </div>
+            <div class="case-title">
+              <h3 data-i18n="cases.mediora.name">Mediora</h3>
+              <p class="case-tag" data-i18n="cases.mediora.tag"></p>
+            </div>
+            <dl class="case-meta">
+              <div><dt data-i18n="meta_labels.year"></dt><dd data-i18n="cases.mediora.year"></dd></div>
+              <div><dt data-i18n="meta_labels.role"></dt><dd data-i18n="cases.mediora.role"></dd></div>
+              <div><dt data-i18n="meta_labels.type"></dt><dd data-i18n="cases.mediora.type"></dd></div>
+              <div><dt data-i18n="meta_labels.status"></dt><dd data-i18n="cases.mediora.status"></dd></div>
+            </dl>
+          </div>
+          <div class="case-body">
+            <div class="case-copy">
+              <p data-i18n="cases.mediora.p1"></p>
+              <p data-i18n="cases.mediora.p2"></p>
+              <ul class="case-notes" data-i18n-list="cases.mediora.notes"></ul>
+              <p class="case-origin" data-i18n="cases.mediora.origin"></p>
+              <ul class="chips">
+                <li>Node.js</li><li>Express</li><li>React 19</li><li>SQLite</li><li>yt-dlp</li>
+                <li>FFmpeg</li><li>Python</li><li>Demucs · PyTorch</li><li>SSE</li>
+              </ul>
+            </div>
+            <div class="case-media">
+              <div class="carousel" data-carousel="mediora"></div>
+              <figure class="vignette">
+                <figcaption class="vignette-head mono">
+                  <span class="pulse" aria-hidden="true"></span>
+                  <span data-i18n="vignette.badge"></span>
+                  <span class="vtitle" data-i18n="cases.mediora.vig"></span>
+                </figcaption>
+                <div class="vignette-stage" data-vignette="mediora"></div>
+              </figure>
+            </div>
+          </div>
+        </article>
+
+        <!-- CASO 04 · MELEE-SHOOTER (UNITY) -->
+        <article class="case rv" id="caso-unity" style="--case:#b34a30; --case-dk:#de7355">
+          <div class="case-head">
+            <div class="case-no">
+              <span class="lbl mono" data-i18n="caseLbl">Caso</span>
+              <strong>Nº 04</strong>
+            </div>
+            <div class="case-title">
+              <h3 data-i18n="cases.unity.name">Melee-shooter multijugador</h3>
+              <p class="case-tag" data-i18n="cases.unity.tag"></p>
+            </div>
+            <dl class="case-meta">
+              <div><dt data-i18n="meta_labels.year"></dt><dd data-i18n="cases.unity.year"></dd></div>
+              <div><dt data-i18n="meta_labels.role"></dt><dd data-i18n="cases.unity.role"></dd></div>
+              <div><dt data-i18n="meta_labels.type"></dt><dd data-i18n="cases.unity.type"></dd></div>
+              <div><dt data-i18n="meta_labels.status"></dt><dd data-i18n="cases.unity.status"></dd></div>
+            </dl>
+          </div>
+          <div class="case-body">
+            <div class="case-copy">
+              <p data-i18n="cases.unity.p1"></p>
+              <p data-i18n="cases.unity.p2"></p>
+              <ul class="case-notes" data-i18n-list="cases.unity.notes"></ul>
+              <p class="case-origin" data-i18n="cases.unity.origin"></p>
+              <ul class="chips">
+                <li>Unity</li><li>C#</li><li>Gameplay</li><li>UI</li>
+              </ul>
+            </div>
+            <div class="case-media">
+              <div class="carousel" data-carousel="unity"></div>
+              <figure class="vignette">
+                <figcaption class="vignette-head mono">
+                  <span class="pulse" aria-hidden="true"></span>
+                  <span data-i18n="vignette.badge"></span>
+                  <span class="vtitle" data-i18n="cases.unity.vig"></span>
+                </figcaption>
+                <div class="vignette-stage" data-vignette="unity"></div>
+              </figure>
+            </div>
+          </div>
+        </article>
+
+        <!-- CASO 05 · POEMARIO -->
+        <article class="case rv" id="caso-poemario" style="--case:#8a6a2f; --case-dk:#c2a45e">
+          <div class="case-head">
+            <div class="case-no">
+              <span class="lbl mono" data-i18n="caseLbl">Caso</span>
+              <strong>Nº 05</strong>
+            </div>
+            <div class="case-title">
+              <h3 data-i18n="cases.poemario.name">Poemario</h3>
+              <p class="case-tag" data-i18n="cases.poemario.tag"></p>
+            </div>
+            <dl class="case-meta">
+              <div><dt data-i18n="meta_labels.year"></dt><dd data-i18n="cases.poemario.year"></dd></div>
+              <div><dt data-i18n="meta_labels.role"></dt><dd data-i18n="cases.poemario.role"></dd></div>
+              <div><dt data-i18n="meta_labels.type"></dt><dd data-i18n="cases.poemario.type"></dd></div>
+              <div><dt data-i18n="meta_labels.status"></dt><dd data-i18n="cases.poemario.status"></dd></div>
+            </dl>
+          </div>
+          <div class="case-body">
+            <div class="case-copy">
+              <p data-i18n="cases.poemario.p1"></p>
+              <p data-i18n="cases.poemario.p2"></p>
+              <ul class="case-notes" data-i18n-list="cases.poemario.notes"></ul>
+              <p class="case-origin" data-i18n="cases.poemario.origin"></p>
+              <ul class="chips">
+                <li>React 18</li><li>TypeScript</li><li>Fastify</li><li>Prisma</li>
+                <li>PostgreSQL</li><li>Tailwind</li><li>Zod</li><li>JWT</li>
+              </ul>
+              <div class="case-links">
+                <a class="pin-link" data-link="poemario.demo"><span data-i18n="links.demo"></span> <span class="arr">↗</span></a>
+                <a class="pin-link" data-link="poemario.code"><span data-i18n="links.code"></span> <span class="arr">↗</span></a>
+              </div>
+            </div>
+            <div class="case-media">
+              <div class="carousel" data-carousel="poemario"></div>
+              <figure class="vignette">
+                <figcaption class="vignette-head mono">
+                  <span class="pulse" aria-hidden="true"></span>
+                  <span data-i18n="vignette.badge"></span>
+                  <span class="vtitle" data-i18n="cases.poemario.vig"></span>
+                </figcaption>
+                <div class="vignette-stage" data-vignette="poemario"></div>
+              </figure>
+            </div>
+          </div>
+        </article>
+
+        <!-- CASO 06 · BITÁCORA DE INVENTARIO -->
+        <article class="case rv" id="caso-bitacora" style="--case:#4c7a3f; --case-dk:#7fae62">
+          <div class="case-head">
+            <div class="case-no">
+              <span class="lbl mono" data-i18n="caseLbl">Caso</span>
+              <strong>Nº 06</strong>
+            </div>
+            <div class="case-title">
+              <h3 data-i18n="cases.bitacora.name">Bitácora de Inventario</h3>
+              <p class="case-tag" data-i18n="cases.bitacora.tag"></p>
+            </div>
+            <dl class="case-meta">
+              <div><dt data-i18n="meta_labels.year"></dt><dd data-i18n="cases.bitacora.year"></dd></div>
+              <div><dt data-i18n="meta_labels.role"></dt><dd data-i18n="cases.bitacora.role"></dd></div>
+              <div><dt data-i18n="meta_labels.type"></dt><dd data-i18n="cases.bitacora.type"></dd></div>
+              <div><dt data-i18n="meta_labels.status"></dt><dd data-i18n="cases.bitacora.status"></dd></div>
+            </dl>
+          </div>
+          <div class="case-body">
+            <div class="case-copy">
+              <p data-i18n="cases.bitacora.p1"></p>
+              <p data-i18n="cases.bitacora.p2"></p>
+              <ul class="case-notes" data-i18n-list="cases.bitacora.notes"></ul>
+              <p class="case-origin" data-i18n="cases.bitacora.origin"></p>
+              <ul class="chips">
+                <li>React</li><li>TypeScript</li><li>Vite</li><li>Tailwind</li>
+                <li>Supabase</li><li>PostgreSQL</li>
+              </ul>
+              <div class="case-links">
+                <a class="pin-link" data-link="bitacora.demo"><span data-i18n="links.demo"></span> <span class="arr">↗</span></a>
+                <a class="pin-link" data-link="bitacora.code"><span data-i18n="links.code"></span> <span class="arr">↗</span></a>
+              </div>
+              <p class="demo-creds" data-i18n="cases.bitacora.demoCreds"></p>
+              <p class="demo-creds-note" data-i18n="cases.bitacora.demoCredsNote"></p>
+            </div>
+            <div class="case-media">
+              <div class="carousel" data-carousel="bitacora"></div>
+              <figure class="vignette">
+                <figcaption class="vignette-head mono">
+                  <span class="pulse" aria-hidden="true"></span>
+                  <span data-i18n="vignette.badge"></span>
+                  <span class="vtitle" data-i18n="cases.bitacora.vig"></span>
+                </figcaption>
+                <div class="vignette-stage" data-vignette="bitacora"></div>
+              </figure>
+            </div>
+          </div>
+        </article>
+
+        <div class="folio mono">
+          <span data-i18n="folio">Folio</span>
+          <span>02 · <span data-i18n="sec.projects">Proyectos</span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SEC. 03 — STACK ============ -->
+    <section id="stack" class="section">
+      <div class="wrap">
+        <div class="rule-double"></div>
+        <header class="sec-head rv">
+          <span class="sec-no mono">Sec. 03</span>
+          <h2 data-i18n="sec.stack">Stack</h2>
+          <p class="sec-intro" data-i18n="sec.stackIntro"></p>
+        </header>
+      </div>
+
+      <div class="stack-rows">
+        <div class="stack-row rv">
+          <div class="wrap">
+            <p class="stack-row-label mono" data-i18n="stackRows.front"></p>
+            <div class="marquee-shell">
+              <button type="button" class="marquee-nav marquee-prev" data-a11y="a11y.stackPrev">&#8592;</button>
+              <div class="marquee" data-marquee="front" tabindex="0"></div>
+              <button type="button" class="marquee-nav marquee-next" data-a11y="a11y.stackNext">&#8594;</button>
+            </div>
+          </div>
+        </div>
+        <div class="stack-row rv">
+          <div class="wrap">
+            <p class="stack-row-label mono" data-i18n="stackRows.server"></p>
+            <div class="marquee-shell">
+              <button type="button" class="marquee-nav marquee-prev" data-a11y="a11y.stackPrev">&#8592;</button>
+              <div class="marquee" data-marquee="server" data-rev tabindex="0"></div>
+              <button type="button" class="marquee-nav marquee-next" data-a11y="a11y.stackNext">&#8594;</button>
+            </div>
+          </div>
+        </div>
+        <div class="stack-row rv">
+          <div class="wrap">
+            <p class="stack-row-label mono" data-i18n="stackRows.data"></p>
+            <div class="marquee-shell">
+              <button type="button" class="marquee-nav marquee-prev" data-a11y="a11y.stackPrev">&#8592;</button>
+              <div class="marquee" data-marquee="data" tabindex="0"></div>
+              <button type="button" class="marquee-nav marquee-next" data-a11y="a11y.stackNext">&#8594;</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wrap">
+        <div class="folio mono">
+          <span data-i18n="folio">Folio</span>
+          <span>03 · <span data-i18n="sec.stack">Stack</span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SEC. 04 — TRAYECTORIA ============ -->
+    <section id="experiencia" class="section">
+      <div class="wrap">
+        <div class="rule-double"></div>
+        <header class="sec-head rv">
+          <span class="sec-no mono">Sec. 04</span>
+          <h2 data-i18n="sec.exp">Trayectoria</h2>
+          <p class="sec-intro" data-i18n="sec.expIntro"></p>
+        </header>
+
+        <ol class="ledger rv">
+          <li class="ledger-row">
+            <span class="ledger-when mono" data-i18n="exp.e1w"></span>
+            <div class="ledger-what">
+              <h3 data-i18n="exp.e1t"></h3>
+              <p class="ledger-org mono" data-i18n="exp.e1o"></p>
+              <p data-i18n="exp.e1p"></p>
+            </div>
+          </li>
+          <li class="ledger-row">
+            <span class="ledger-when mono" data-i18n="exp.e2w"></span>
+            <div class="ledger-what">
+              <h3 data-i18n="exp.e2t"></h3>
+              <p class="ledger-org mono" data-i18n="exp.e2o"></p>
+              <p data-i18n="exp.e2p"></p>
+            </div>
+          </li>
+          <li class="ledger-row">
+            <span class="ledger-when mono" data-i18n="exp.e3w"></span>
+            <div class="ledger-what">
+              <h3 data-i18n="exp.e3t"></h3>
+              <p class="ledger-org mono" data-i18n="exp.e3o"></p>
+              <p data-i18n="exp.e3p"></p>
+            </div>
+          </li>
+          <li class="ledger-row">
+            <span class="ledger-when mono" data-i18n="exp.e4w"></span>
+            <div class="ledger-what">
+              <h3 data-i18n="exp.e4t"></h3>
+              <p class="ledger-org mono" data-i18n="exp.e4o"></p>
+              <p data-i18n="exp.e4p"></p>
+            </div>
+          </li>
+          <li class="ledger-row">
+            <span class="ledger-when mono" data-i18n="exp.e5w"></span>
+            <div class="ledger-what">
+              <h3 data-i18n="exp.e5t"></h3>
+              <p class="ledger-org mono" data-i18n="exp.e5o"></p>
+              <p data-i18n="exp.e5p"></p>
+            </div>
+          </li>
+        </ol>
+
+        <div class="edu rv">
+          <span class="lbl mono" data-i18n="exp.eduLabel"></span>
+          <strong data-i18n="exp.eduT"></strong>
+          <span data-i18n="exp.eduO"></span>
+          <span class="when mono" data-i18n="exp.eduW"></span>
+        </div>
+
+        <div class="folio mono">
+          <span data-i18n="folio">Folio</span>
+          <span>04 · <span data-i18n="sec.exp">Trayectoria</span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SEC. 05 — CONTACTO ============ -->
+    <section id="contacto" class="section">
+      <div class="wrap">
+        <div class="rule-double"></div>
+        <header class="sec-head rv">
+          <span class="sec-no mono">Sec. 05</span>
+          <h2 data-i18n="sec.contact">Contacto</h2>
+        </header>
+
+        <p class="contact-big rv" data-i18n="contact.big"></p>
+        <p class="contact-p rv" data-i18n="contact.p"></p>
+        <div class="contact-links rv">
+          <a class="btn btn-solid" data-link="email" data-i18n="contact.email"></a>
+          <a class="btn btn-ghost" data-link="github" data-i18n="contact.github"></a>
+          <a class="btn btn-ghost" data-link="linkedin" data-i18n="contact.linkedin"></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ COLOFÓN ============ -->
+  <footer class="colophon">
+    <div class="wrap colophon-inner">
+      <span class="made" data-i18n="footer.made"></span>
+      <span class="type" data-i18n="footer.type"></span>
+      <span>© <span id="year">2026</span> John Orellana</span>
+      <a class="top-link" href="#top" data-i18n="footer.top"></a>
+    </div>
+  </footer>
+
+  <script src="js/config.js" defer></script>
+  <script src="js/i18n.js" defer></script>
+  <script src="js/main.js" defer></script>
+  <script src="js/vignettes.js" defer></script>
+</body>
+</html>
