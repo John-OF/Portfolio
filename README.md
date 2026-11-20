@@ -72,10 +72,11 @@ Si cambias algo en un idioma, recuerda su gemelo en el otro.
 | # | Sección | `id` |
 |---|---|---|
 | 01 | Perfil | `#sobre-mi` |
-| 02 | Proyectos (6 casos) | `#proyectos` |
-| 03 | Stack | `#stack` |
-| 04 | Trayectoria | `#experiencia` |
-| 05 | Contacto | `#contacto` |
+| 02 | Proyectos (8 casos) | `#proyectos` |
+| 03 | Desarrollo con IA | `#ia` |
+| 04 | Stack | `#stack` |
+| 05 | Trayectoria | `#experiencia` |
+| 06 | Contacto | `#contacto` |
 
 Los números de sección viven en tres sitios del HTML: `.sec-no`, el `.folio` del pie y el comentario del
 bloque. Si reordenas secciones, actualiza los tres.

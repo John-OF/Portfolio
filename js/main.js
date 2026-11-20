@@ -180,17 +180,22 @@
       items.forEach(it => {
         const tile = document.createElement("span");
         tile.className = "tile";
-        const img = document.createElement("img");
-        img.src = "assets/icons/" + it.slug + ".svg";
-        img.alt = "";
-        img.width = 22; img.height = 22;
-        img.loading = "lazy";
-        if (it.inv) img.classList.add("ico-inv");
-        if (it.boost) img.classList.add("ico-boost");
         const name = document.createElement("span");
         name.className = "tile-name";
         name.textContent = it.name;
-        tile.append(img, name);
+        if (it.slug) {
+          const img = document.createElement("img");
+          img.src = "assets/icons/" + it.slug + ".svg";
+          img.alt = "";
+          img.width = 22; img.height = 22;
+          img.loading = "lazy";
+          if (it.inv) img.classList.add("ico-inv");
+          if (it.boost) img.classList.add("ico-boost");
+          tile.append(img, name);
+        } else {
+          tile.classList.add("tile-text");
+          tile.append(name);
+        }
         half.appendChild(tile);
       });
       track.appendChild(half);
@@ -256,11 +261,21 @@
   /* ---------- carruseles ---------- */
   const carousels = [];
 
+  function themeMode() { return doc.dataset.theme === "dark" ? "dark" : "light"; }
+
+  /* una captura es "ruta.webp" (igual en ambos temas) o { light, dark };
+     si el tema pedido no tiene imagen, cae al otro: nunca queda vacía */
+  function shotFor(entry, mode) {
+    if (!entry) return "";
+    if (typeof entry === "string") return entry;
+    return entry[mode] || entry.light || entry.dark || "";
+  }
+
   function buildCarousels() {
     $$("[data-carousel]").forEach(root => {
       const key = root.dataset.carousel;
-      const srcs = SHOTS[key] || [];
-      if (!srcs.length) { root.hidden = true; return; }
+      const shots = SHOTS[key] || [];
+      if (!shots.length) { root.hidden = true; return; }
 
       root.innerHTML =
         '<div class="car-top mono">' +
@@ -277,11 +292,11 @@
       const track = $(".car-track", root);
       const dotsBox = $(".car-dots", root);
 
-      srcs.forEach((src, i) => {
+      shots.forEach((entry, i) => {
         const fig = document.createElement("figure");
         fig.className = "car-slide";
         const img = document.createElement("img");
-        img.src = src;
+        img.src = shotFor(entry, themeMode());
         img.loading = "lazy";
         img.decoding = "async";
         fig.appendChild(img);
@@ -294,7 +309,7 @@
         dotsBox.appendChild(dot);
       });
 
-      const state = { root, key, track, index: 0, n: srcs.length };
+      const state = { root, key, track, index: 0, n: shots.length, shots };
       carousels.push(state);
 
       function clamp(i) { return Math.max(0, Math.min(state.n - 1, i)); }
@@ -365,6 +380,31 @@
 
   function refreshCarouselsLang() { carousels.forEach(paintCarousel); }
 
+  /* cambia las capturas al tema activo: solo se descarga el tema en uso */
+  function refreshCarouselsTheme(mode) {
+    carousels.forEach(st => {
+      $$(".car-slide img", st.root).forEach((img, i) => {
+        const next = shotFor(st.shots[i], mode);
+        if (next && img.getAttribute("src") !== next) img.src = next;
+      });
+    });
+  }
+
+  /* precarga el tema inactivo en reposo, para que el toggle no parpadee */
+  function preloadTheme(mode) {
+    const other = mode === "dark" ? "light" : "dark";
+    const idle = window.requestIdleCallback || (fn => setTimeout(fn, 1200));
+    idle(() => {
+      carousels.forEach(st => st.shots.forEach(entry => {
+        const src = shotFor(entry, mode);
+        if (!src || src === shotFor(entry, other)) return; // sin par: nada que precargar
+        const im = new Image();
+        im.decoding = "async";
+        im.src = src;
+      }));
+    });
+  }
+
   /* ---------- aparición al hacer scroll ---------- */
   function initReveal() {
     const els = $$(".rv");
@@ -385,6 +425,13 @@
     buildMarquees();
     buildCarousels();
     initReveal();
+
+    window.addEventListener("jo:theme", e => {
+      const mode = (e.detail && e.detail.mode) || themeMode();
+      refreshCarouselsTheme(mode);
+      preloadTheme(mode === "dark" ? "light" : "dark");
+    });
+    preloadTheme(themeMode() === "dark" ? "light" : "dark");
 
     // red de seguridad: nada queda oculto si el observer no dispara
     setTimeout(() => $$(".rv:not(.on)").forEach(el => el.classList.add("on")), 3000);

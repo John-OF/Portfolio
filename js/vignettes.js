@@ -8,6 +8,10 @@
    - saas:      catálogo → carrito → pedido por WhatsApp
    - poemario:  un verso que se escribe entre el día y la noche
    - bitacora:  entradas, salidas y una alerta de stock
+   - agent:     una sesión con un agente de IA: plan, aprobación, pruebas y el hook
+   - layers:    capas de reglas; una regla interna choca y el agente pregunta
+   - mcp:       del encargo a las llamadas MCP y al borrador en WordPress
+   - bot:       conversación de WhatsApp, cobro con Payphone y etapa en HubSpot
 
    Nota: los colores con var(--token) se asignan vía style.*
    (los atributos de presentación SVG no resuelven var()).
@@ -838,6 +842,404 @@
     return { frame, static() { frame(6200); } };
   }
 
+  /* largo real de un <text> ya pintado (0 si aún no se puede medir) */
+  function textLen(el) {
+    try { return el.getComputedTextLength(); } catch (e) { return 0; }
+  }
+
+  /* parte una frase en dos renglones por el espacio más cercano al centro */
+  function wrap2(s, max) {
+    if (s.length <= max) return [s, ""];
+    const mid = s.length / 2;
+    let best = -1;
+    for (let i = 0; i < s.length; i++) {
+      if (s[i] === " " && (best < 0 || Math.abs(i - mid) < Math.abs(best - mid))) best = i;
+    }
+    return best < 0 ? [s, ""] : [s.slice(0, best), s.slice(best + 1)];
+  }
+
+  /* ============ 8. AGENTE: una sesión de trabajo con reglas ============ */
+  function vigAgent(stage, accent) {
+    const L = T("agent");
+    const LINES = (L && L.lines) || [];
+    // verde más claro que el de la bitácora: se tiene que leer también en modo oscuro
+    const red = "#c4492f", green = "#2e9457";
+    stage.innerHTML =
+      '<svg class="vg" viewBox="0 0 420 206" aria-hidden="true">' +
+      '<rect class="term" x="14" y="10" width="392" height="186" rx="4"/>' +
+      '<line class="tbar" x1="14" y1="27" x2="406" y2="27"/>' +
+      [0, 1, 2].map(i => '<circle class="tdot" cx="' + (27 + i * 10) + '" cy="18.5" r="2.6"/>').join("") +
+      '<text class="vg-mono ttl" x="210" y="21.5" text-anchor="middle">~/repo</text>' +
+      LINES.map((l, i) =>
+        '<text class="vg-mono ln" x="26" y="' + (45 + i * 15.4) + '"></text>').join("") +
+      '<rect class="cur" width="5" height="10" x="-20" y="0"/>' +
+      "</svg>";
+
+    const svg = stage.firstChild;
+    const q = s => svg.querySelector(s), qq = s => svg.querySelectorAll(s);
+    st(q(".term"), { fill: BG, stroke: INK, strokeWidth: "1.4" });
+    st(q(".tbar"), { stroke: LINE });
+    qq(".tdot").forEach(el => st(el, { fill: LINE }));
+    st(q(".ttl"), { fill: MUT, fontSize: "7.5px", letterSpacing: "1px" });
+    const cur = q(".cur");
+    st(cur, { fill: accent });
+
+    const COLOR = { sys: MUT, you: INK, ai: accent, run: MUT, ok: green, no: red };
+    const TYPED = { you: true, run: true };
+    const lines = Array.from(qq(".ln"));
+    lines.forEach((el, i) => {
+      const kind = LINES[i][0];
+      st(el, { fill: COLOR[kind] || INK, fontSize: "8.6px", fontWeight: kind === "no" ? "600" : "400" });
+    });
+
+    // cuándo empieza cada renglón (s): la aprobación llega antes de tocar nada
+    const START = [0.3, 1.0, 2.5, 3.4, 4.6, 5.6, 6.9, 7.8, 8.7, 9.9];
+    const D = 15000;
+
+    function frame(tm) {
+      const t = (tm % D) / 1000;
+      const gIn = seg(t, 0, 0.3), gOut = seg(t, 14.2, 14.8);
+      svg.setAttribute("opacity", (gIn * (1 - gOut)).toFixed(2));
+
+      let last = -1;
+      lines.forEach((el, i) => {
+        const kind = LINES[i][0], full = LINES[i][1];
+        const s = START[i] !== undefined ? START[i] : 0.3 + i * 1.0;
+        if (t < s) { el.textContent = ""; el.setAttribute("opacity", 0); return; }
+        last = i;
+        if (TYPED[kind]) {
+          const dur = Math.min(1.1, 0.25 + full.length * 0.035);
+          el.textContent = typed(full, seg(t, s, s + dur));
+          el.setAttribute("opacity", 1);
+        } else {
+          el.textContent = full;
+          el.setAttribute("opacity", eo(seg(t, s, s + 0.35)).toFixed(2));
+        }
+        // el hook rechaza: el renglón tiembla un instante
+        const shake = kind === "no" ? Math.sin(t * 70) * 2.2 * (1 - seg(t, s, s + 0.5)) : 0;
+        el.setAttribute("transform", "translate(" + shake.toFixed(1) + " 0)");
+      });
+
+      // mientras corren las pruebas, unos puntos de espera
+      const runIdx = LINES.findIndex(l => l[1].indexOf("test") > -1 && l[0] === "run");
+      if (runIdx > -1 && last === runIdx) {
+        const el = lines[runIdx];
+        const dots = ".".repeat(1 + Math.floor((t * 4) % 3));
+        if (el.textContent === LINES[runIdx][1]) el.textContent = LINES[runIdx][1] + " " + dots;
+      }
+
+      if (last >= 0) {
+        const el = lines[last];
+        cur.setAttribute("x", (26 + textLen(el) + 3).toFixed(1));
+        cur.setAttribute("y", (45 + last * 15.4 - 8.5).toFixed(1));
+        cur.setAttribute("opacity", Math.sin(t * 7) > 0 ? 1 : 0);
+      } else {
+        cur.setAttribute("opacity", 0);
+      }
+    }
+    return { frame, static() { frame(13500); } };
+  }
+
+  /* ============ 9. CAPAS DE REGLAS: la regla interna choca y se detiene ============ */
+  function vigLayers(stage, accent) {
+    const L = T("layers");
+    const red = "#b3402a";
+    const PX = 64, PW = 184, PH = 22;
+    const Y = [150, 120, 90, 60]; // de abajo (globales) a arriba (chat)
+    stage.innerHTML =
+      '<svg class="vg" viewBox="0 0 420 200" aria-hidden="true">' +
+      Y.map((y, i) =>
+        '<g class="plate" data-i="' + i + '">' +
+        '<path class="pside" d="M' + (PX + PW) + ' ' + y + ' l8 -6 v' + PH + ' l-8 6 z"/>' +
+        '<path class="ptop" d="M' + PX + ' ' + y + ' l8 -6 h' + PW + ' l-8 6 z"/>' +
+        '<rect class="pface" x="' + PX + '" y="' + y + '" width="' + PW + '" height="' + PH + '"/>' +
+        '<text class="vg-mono plab" x="' + (PX + 12) + '" y="' + (y + 14.5) + '"></text>' +
+        "</g>").join("") +
+      '<line class="wall" x1="262" y1="44" x2="262" y2="182"/>' +
+      '<g class="hit"><rect class="hbox" x="0" y="96" width="96" height="22" rx="2"/>' +
+      '<text class="vg-mono htext" x="48" y="110.5" text-anchor="middle"></text></g>' +
+      '<g class="stop"><circle class="scirc" cx="334" cy="150" r="13"/>' +
+      '<text class="vg-serif sq" x="334" y="156" text-anchor="middle">?</text>' +
+      '<text class="vg-mono stext" x="334" y="180" text-anchor="middle"></text></g>' +
+      "</svg>";
+
+    const svg = stage.firstChild;
+    const q = s => svg.querySelector(s), qq = s => svg.querySelectorAll(s);
+    qq(".pface").forEach(el => st(el, { fill: BG, stroke: INK, strokeWidth: "1.3" }));
+    qq(".ptop").forEach(el => st(el, { fill: SOFT, stroke: INK, strokeWidth: "1.1" }));
+    qq(".pside").forEach(el => st(el, { fill: SOFT, stroke: INK, strokeWidth: "1.1" }));
+    qq(".plab").forEach((el, i) => {
+      st(el, { fill: INK, fontSize: "8px", letterSpacing: "1.2px" });
+      el.textContent = (L.l && L.l[i]) || "";
+    });
+    st(q(".wall"), { stroke: accent, strokeWidth: "2", strokeDasharray: "5 4" });
+    st(q(".hbox"), { fill: BG, stroke: red, strokeWidth: "1.5" });
+    st(q(".htext"), { fill: red, fontSize: "8px" });
+    q(".htext").textContent = L.hit || "";
+    st(q(".scirc"), { fill: "none", stroke: accent, strokeWidth: "2" });
+    st(q(".sq"), { fill: accent, fontSize: "17px" });
+    st(q(".stext"), { fill: accent, fontSize: "8px", letterSpacing: "1.4px" });
+    q(".stext").textContent = L.stop || "";
+
+    const plates = Array.from(qq(".plate"));
+    const hit = q(".hit"), wall = q(".wall"), stop = q(".stop");
+    const D = 10500;
+
+    function frame(tm) {
+      const t = (tm % D) / 1000;
+      const gOut = seg(t, 9.6, 10.2);
+      svg.setAttribute("opacity", (1 - gOut).toFixed(2));
+
+      // las capas caen una sobre otra
+      plates.forEach((p, i) => {
+        const a = seg(t, 0.3 + i * 0.6, 0.8 + i * 0.6);
+        p.setAttribute("opacity", a.toFixed(2));
+        p.setAttribute("transform", "translate(0 " + lerp(-16, 0, eo(a)).toFixed(1) + ")");
+      });
+
+      // la regla interna entra desde la derecha y choca con la pared
+      const go = eio(seg(t, 3.3, 4.5));
+      let hx = lerp(430, 268, go);
+      const bump = seg(t, 4.5, 5.0);
+      if (bump > 0 && bump < 1) hx += Math.sin(bump * Math.PI * 4) * 4 * (1 - bump);
+      hit.setAttribute("transform", "translate(" + hx.toFixed(1) + " 0)");
+      hit.setAttribute("opacity", seg(t, 3.3, 3.6).toFixed(2));
+
+      const flash = seg(t, 4.4, 5.6);
+      wall.setAttribute("opacity", (seg(t, 3.0, 3.4) * (0.35 + 0.65 * Math.sin(flash * Math.PI))).toFixed(2));
+
+      // todo se detiene y aparece la pregunta
+      const sIn = seg(t, 5.0, 5.5);
+      stop.setAttribute("opacity", sIn.toFixed(2));
+      const pulse = sIn >= 1 ? 1 + 0.06 * Math.sin(t * 5) : lerp(0.6, 1, eo(sIn));
+      stop.setAttribute("transform",
+        "translate(334 150) scale(" + pulse.toFixed(3) + ") translate(-334 -150)");
+    }
+    return { frame, static() { frame(7000); } };
+  }
+
+  /* ============ 10. MCP: del encargo al borrador en WordPress ============ */
+  function vigMcp(stage, accent) {
+    const L = T("mcp");
+    const CALLS = (L && L.calls) || [];
+    const green = "#2e9457";
+    stage.innerHTML =
+      '<svg class="vg" viewBox="0 0 420 212" aria-hidden="true">' +
+      '<rect class="prompt" x="18" y="12" width="384" height="26" rx="13"/>' +
+      '<text class="vg-mono ptxt" x="34" y="29"></text>' +
+      '<rect class="pcar" width="5" height="11" x="-20" y="19"/>' +
+      CALLS.map((c, i) =>
+        '<g class="call" data-i="' + i + '">' +
+        '<text class="vg-mono cname" x="34" y="' + (62 + i * 24) + '"></text>' +
+        '<text class="vg-mono cres" x="34" y="' + (72 + i * 24) + '"></text>' +
+        '<path class="ctick" d="M20 ' + (57 + i * 24) + ' l3 4 l6 -7" fill="none"/>' +
+        '<circle class="cspin" cx="24" cy="' + (59 + i * 24) + '" r="3.4" fill="none"/>' +
+        "</g>").join("") +
+      '<g class="post">' +
+      '<rect class="pcard" x="262" y="52" width="140" height="146" rx="3"/>' +
+      '<rect class="pimg" x="272" y="62" width="120" height="52"/>' +
+      '<path class="pmtn" d="M272 114 l30 -26 l18 14 l20 -22 l52 34 z"/>' +
+      '<circle class="psun" cx="372" cy="76" r="6"/>' +
+      '<rect class="pwebp" x="354" y="102" width="34" height="10" rx="1.5"/>' +
+      '<text class="vg-mono pwebpt" x="371" y="109.5" text-anchor="middle">WEBP</text>' +
+      '<rect class="ptitle" x="272" y="124" width="104" height="6"/>' +
+      '<rect class="ptitle2" x="272" y="134" width="72" height="6"/>' +
+      [0, 1, 2].map(i =>
+        '<rect class="pline" x="272" y="' + (148 + i * 8) + '" width="' + [120, 112, 84][i] + '" height="3"/>').join("") +
+      '<text class="vg-mono pcred" x="272" y="186"></text>' +
+      '<rect class="pbadge" x="336" y="44" width="62" height="15" rx="2"/>' +
+      '<text class="vg-mono pbadget" x="367" y="54.5" text-anchor="middle"></text>' +
+      "</g></svg>";
+
+    const svg = stage.firstChild;
+    const q = s => svg.querySelector(s), qq = s => svg.querySelectorAll(s);
+    st(q(".prompt"), { fill: BG, stroke: INK, strokeWidth: "1.4" });
+    st(q(".ptxt"), { fill: INK, fontSize: "9px" });
+    st(q(".pcar"), { fill: accent });
+    qq(".cname").forEach(el => st(el, { fill: accent, fontSize: "8.6px", fontWeight: "600" }));
+    qq(".cres").forEach(el => st(el, { fill: MUT, fontSize: "7.4px" }));
+    qq(".ctick").forEach(el => {
+      st(el, { stroke: green, strokeWidth: "1.8" });
+      el.setAttribute("stroke-dasharray", "14");
+    });
+    qq(".cspin").forEach(el => {
+      st(el, { stroke: accent, strokeWidth: "1.4" });
+      el.setAttribute("stroke-dasharray", "14 8");
+    });
+    st(q(".pcard"), { fill: BG, stroke: INK, strokeWidth: "1.4" });
+    st(q(".pimg"), { fill: SOFT });
+    st(q(".pmtn"), { fill: accent });
+    st(q(".psun"), { fill: accent });
+    st(q(".pwebp"), { fill: INK });
+    st(q(".pwebpt"), { fill: BG, fontSize: "6.5px", letterSpacing: "1px" });
+    st(q(".ptitle"), { fill: INK }); st(q(".ptitle2"), { fill: INK });
+    qq(".pline").forEach(el => st(el, { fill: LINE }));
+    st(q(".pcred"), { fill: MUT, fontSize: "6.6px" });
+    st(q(".pbadge"), { fill: accent });
+    st(q(".pbadget"), { fill: BG, fontSize: "7px", letterSpacing: "1.4px" });
+    q(".pcred").textContent = L.credit || "";
+    q(".pbadget").textContent = L.post || "";
+
+    const calls = Array.from(qq(".call"));
+    calls.forEach((g, i) => {
+      g.querySelector(".cname").textContent = CALLS[i][0];
+      g.querySelector(".cres").textContent = CALLS[i][1];
+    });
+
+    const C0 = 2.2, STEP = 1.15;
+    const done = i => C0 + i * STEP + 0.8;      // momento en que la llamada i responde
+    const D = 13500;
+
+    function frame(tm) {
+      const t = (tm % D) / 1000;
+      const gIn = seg(t, 0, 0.3), gOut = seg(t, 12.7, 13.3);
+      svg.setAttribute("opacity", (gIn * (1 - gOut)).toFixed(2));
+
+      const pt = q(".ptxt");
+      pt.textContent = typed(L.prompt || "", seg(t, 0.3, 1.8));
+      const car = q(".pcar");
+      car.setAttribute("x", (34 + textLen(pt) + 3).toFixed(1));
+      car.setAttribute("opacity", t < 2.0 && Math.sin(t * 8) > 0 ? 1 : 0);
+
+      calls.forEach((g, i) => {
+        const s = C0 + i * STEP;
+        const a = seg(t, s, s + 0.3);
+        g.setAttribute("opacity", a.toFixed(2));
+        g.setAttribute("transform", "translate(" + lerp(-6, 0, eo(a)).toFixed(1) + " 0)");
+        const ok = t >= done(i);
+        const spin = g.querySelector(".cspin");
+        spin.setAttribute("opacity", ok ? 0 : 1);
+        spin.setAttribute("transform",
+          "rotate(" + ((t * 420) % 360).toFixed(0) + " 24 " + (59 + i * 24) + ")");
+        g.querySelector(".ctick").setAttribute("stroke-dashoffset",
+          (14 * (1 - eo(seg(t, done(i), done(i) + 0.3)))).toFixed(1));
+        g.querySelector(".cres").setAttribute("opacity", eo(seg(t, done(i), done(i) + 0.3)).toFixed(2));
+      });
+
+      // la entrada de WordPress se llena a medida que responden las herramientas
+      const show = (sel, p) => qq(sel).forEach(el => el.setAttribute("opacity", p.toFixed(2)));
+      show(".pcard", seg(t, C0, C0 + 0.4));
+      show(".pimg", seg(t, C0, C0 + 0.4));
+      show(".ptitle", seg(t, done(1), done(1) + 0.4));
+      show(".ptitle2", seg(t, done(1) + 0.2, done(1) + 0.6));
+      show(".pline", seg(t, done(2), done(2) + 0.4));
+      show(".pmtn", seg(t, done(3), done(3) + 0.5));
+      show(".psun", seg(t, done(3), done(3) + 0.5));
+      show(".pwebp", seg(t, done(4), done(4) + 0.3));
+      show(".pwebpt", seg(t, done(4), done(4) + 0.3));
+      show(".pcred", seg(t, done(5), done(5) + 0.4));
+      const b = seg(t, done(5) + 0.2, done(5) + 0.6);
+      show(".pbadge", b); show(".pbadget", b);
+      q(".pmtn").setAttribute("transform",
+        "translate(0 " + lerp(10, 0, eo(seg(t, done(3), done(3) + 0.6))).toFixed(1) + ")");
+    }
+    return { frame, static() { frame(11500); } };
+  }
+
+  /* ============ 11. BOT: conversación, cobro y CRM ============ */
+  function vigBot(stage, accent) {
+    const L = T("bot");
+    const wa = "#22a15b";
+    const MSG = (L && L.msgs) || ["", "", ""];
+    const APIS = (L && L.apis) || ["", "", ""];
+    const m0 = wrap2(MSG[0], 22), m2 = wrap2(MSG[2], 22);
+    const NY = [32, 90, 148]; // nodos: WhatsApp, Payphone, HubSpot
+    stage.innerHTML =
+      '<svg class="vg" viewBox="0 0 420 212" aria-hidden="true">' +
+      '<rect class="phone" x="40" y="10" width="138" height="192" rx="14"/>' +
+      '<line class="pbar" x1="40" y1="30" x2="178" y2="30"/>' +
+      '<rect class="notch" x="94" y="17" width="30" height="5" rx="2.5"/>' +
+      // burbujas
+      '<g class="b0"><rect class="bb" x="50" y="40" width="112" height="' + (m0[1] ? 28 : 18) + '" rx="6"/>' +
+      '<text class="bt" x="58" y="52">' + m0[0] + '</text><text class="bt" x="58" y="62">' + m0[1] + "</text></g>" +
+      '<g class="b1"><rect class="bu" x="88" y="' + (m0[1] ? 76 : 66) + '" width="80" height="18" rx="6"/>' +
+      '<text class="bt bt-u" x="160" y="' + (m0[1] ? 88 : 78) + '" text-anchor="end">' + MSG[1] + "</text></g>" +
+      '<g class="b2"><rect class="bb" x="50" y="102" width="112" height="' + (m2[1] ? 28 : 18) + '" rx="6"/>' +
+      '<text class="bt" x="58" y="114">' + m2[0] + '</text><text class="bt" x="58" y="124">' + m2[1] + "</text></g>" +
+      '<g class="btn"><rect class="pill" x="54" y="140" width="110" height="20" rx="10"/>' +
+      '<text class="vg-mono pillt" x="109" y="153.5" text-anchor="middle"></text></g>' +
+      '<path class="tick" d="M100 178 l6 7 l12 -13" fill="none"/>' +
+      // nodos externos
+      NY.map((y, i) =>
+        '<line class="wire" x1="178" y1="' + (y + 17) + '" x2="262" y2="' + (y + 17) + '"/>' +
+        '<g class="node" data-i="' + i + '"><rect class="nbox" x="262" y="' + y + '" width="126" height="34" rx="3"/>' +
+        '<text class="vg-mono nname" x="274" y="' + (y + 14) + '"></text>' +
+        '<text class="vg-mono nstat" x="274" y="' + (y + 26) + '"></text></g>').join("") +
+      '<circle class="pkt" r="4" cx="-10" cy="0"/>' +
+      "</svg>";
+
+    const svg = stage.firstChild;
+    const q = s => svg.querySelector(s), qq = s => svg.querySelectorAll(s);
+    st(q(".phone"), { fill: BG, stroke: INK, strokeWidth: "1.6" });
+    st(q(".pbar"), { stroke: LINE });
+    st(q(".notch"), { fill: LINE });
+    qq(".bb").forEach(el => st(el, { fill: SOFT }));
+    st(q(".bu"), { fill: wa });
+    qq(".bt").forEach(el => st(el, { fill: INK, fontSize: "8.2px", fontFamily: "var(--font-body)" }));
+    st(q(".bt-u"), { fill: "#ffffff" });
+    st(q(".pill"), { fill: BG, stroke: accent, strokeWidth: "1.4" });
+    const pillt = q(".pillt");
+    st(pillt, { fill: accent, fontSize: "7.4px", letterSpacing: "0.5px" });
+    pillt.textContent = L.btn || "";
+    st(q(".tick"), { stroke: wa, strokeWidth: "2.4" });
+    q(".tick").setAttribute("stroke-dasharray", "30");
+    qq(".wire").forEach(el => st(el, { stroke: MUT, strokeDasharray: "4 4" }));
+    qq(".nbox").forEach(el => st(el, { fill: BG, stroke: INK, strokeWidth: "1.3" }));
+    qq(".nname").forEach((el, i) => { st(el, { fill: INK, fontSize: "9.4px", fontWeight: "600" }); el.textContent = APIS[i]; });
+    const stats = Array.from(qq(".nstat"));
+    stats.forEach(el => st(el, { fontSize: "7.8px", fontWeight: "600" }));
+    stats[1].textContent = L.paid || ""; st(stats[1], { fill: wa });
+    stats[2].textContent = L.stage || ""; st(stats[2], { fill: accent });
+    const pkt = q(".pkt");
+    st(pkt, { fill: accent });
+
+    // viajes del paquete: [inicio, fin, nodo, hacia el teléfono]
+    const TRIPS = [[0.2, 0.8, 0, true], [1.5, 2.1, 0, false], [2.7, 3.3, 0, true],
+                   [5.0, 5.8, 1, false], [6.7, 7.5, 2, false]];
+    const D = 12800;
+
+    function frame(tm) {
+      const t = (tm % D) / 1000;
+      const gIn = seg(t, 0, 0.3), gOut = seg(t, 12.0, 12.6);
+      svg.setAttribute("opacity", (gIn * (1 - gOut)).toFixed(2));
+
+      const pop = (sel, s) => {
+        const a = seg(t, s, s + 0.35);
+        const g = q(sel);
+        g.setAttribute("opacity", a.toFixed(2));
+        g.setAttribute("transform", "translate(0 " + lerp(6, 0, eo(a)).toFixed(1) + ")");
+      };
+      pop(".b0", 0.8); pop(".b1", 1.5); pop(".b2", 3.3); pop(".btn", 4.0);
+
+      // el toque en el botón de pago
+      const tap = seg(t, 4.8, 5.1);
+      st(q(".pill"), { fill: tap > 0 && tap < 1 ? accent : BG });
+      st(pillt, { fill: tap > 0 && tap < 1 ? BG : accent });
+      q(".tick").setAttribute("stroke-dashoffset", (30 * (1 - eo(seg(t, 6.0, 6.5)))).toFixed(1));
+
+      let px = -10, py = 0, on = 0, active = -1;
+      TRIPS.forEach(([a, b, n, back]) => {
+        if (t >= a && t < b) {
+          const p = eio(seg(t, a, b));
+          const y = NY[n] + 17;
+          px = back ? lerp(262, 178, p) : lerp(178, 262, p);
+          py = y; on = 1;
+        }
+        if (t >= b && t < b + 0.5) active = n;
+      });
+      pkt.setAttribute("cx", px.toFixed(1)); pkt.setAttribute("cy", py);
+      pkt.setAttribute("opacity", on);
+
+      qq(".node").forEach((g, i) => {
+        const glow = i === active;
+        st(g.querySelector(".nbox"), { stroke: glow ? accent : INK, strokeWidth: glow ? "2.2" : "1.3" });
+      });
+      stats[1].setAttribute("opacity", eo(seg(t, 5.8, 6.2)).toFixed(2));
+      stats[2].setAttribute("opacity", eo(seg(t, 7.5, 7.9)).toFixed(2));
+    }
+    return { frame, static() { frame(9000); } };
+  }
+
   /* ============ motor común ============ */
   const FACTORIES = {
     hero: vigHero,
@@ -847,6 +1249,10 @@
     saas: vigSaas,
     poemario: vigPoemario,
     bitacora: vigBitacora,
+    agent: vigAgent,
+    layers: vigLayers,
+    mcp: vigMcp,
+    bot: vigBot,
   };
 
   const items = [];

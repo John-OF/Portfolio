@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>John Orellana — Desarrollador web full-stack</title>
-  <meta name="description" content="Portafolio de John Orellana: productos web construidos de punta a punta — ML explicable, SaaS multi-tenant, procesamiento multimedia y más. Guayaquil, Ecuador.">
-  <meta property="og:title" content="John Orellana — Desarrollador web full-stack">
-  <meta property="og:description" content="Productos web construidos de punta a punta: ML explicable, SaaS multi-tenant, procesamiento multimedia.">
+  <title>John Orellana — Ingeniero de software full-stack con IA aplicada</title>
+  <meta name="description" content="Portafolio de John Orellana: productos web de punta a punta, desarrollados con agentes de IA que siguen reglas propias y con servidores MCP. ML explicable, SaaS multi-tenant, integración de APIs y diseño UI/UX. Guayaquil, Ecuador.">
+  <meta property="og:title" content="John Orellana — Ingeniero de software full-stack con IA aplicada">
+  <meta property="og:description" content="Productos web de punta a punta, agentes de IA con reglas propias, servidores MCP, integración de APIs y diseño UI/UX.">
   <meta property="og:type" content="website">
   <meta name="theme-color" content="#f3eee2" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#161410" media="(prefers-color-scheme: dark)">
@@ -46,6 +46,7 @@
       </a>
       <nav class="mainnav" data-a11y="a11y.nav">
         <a href="#proyectos" data-i18n="nav.projects">Proyectos</a>
+        <a href="#ia" data-i18n="nav.ai">IA</a>
         <a href="#stack" data-i18n="nav.stack">Stack</a>
         <a href="#experiencia" data-i18n="nav.exp">Trayectoria</a>
         <a href="#contacto" data-i18n="nav.contact">Contacto</a>
@@ -115,7 +116,7 @@
         <circle cx="75" cy="75" r="50" class="in" stroke-width="1"/>
         <g class="ring">
           <path id="stampPath" d="M 75 14 A 61 61 0 1 1 74.99 14" fill="none"/>
-          <text><textPath href="#stampPath">GUAYAQUIL · ECUADOR · WEB FULL-STACK · MMXXV · </textPath></text>
+          <text><textPath href="#stampPath">GUAYAQUIL · ECUADOR · FULL-STACK · IA · MMXXV · </textPath></text>
         </g>
         <text x="75" y="85" text-anchor="middle" class="stamp-mono">J·O</text>
       </svg>
@@ -134,6 +135,7 @@
           <div>
             <p class="lead" data-i18n="about.p1"></p>
             <p data-i18n="about.p2"></p>
+            <p data-i18n="about.p3"></p>
           </div>
           <dl class="spec-list">
             <div class="spec-row">
@@ -147,6 +149,10 @@
             <div class="spec-row">
               <dt class="mono" data-i18n="about.d3k"></dt><span class="dots"></span>
               <dd data-i18n="about.d3v"></dd>
+            </div>
+            <div class="spec-row">
+              <dt class="mono" data-i18n="about.d4k"></dt><span class="dots"></span>
+              <dd data-i18n="about.d4v"></dd>
             </div>
           </dl>
         </div>
@@ -216,7 +222,7 @@
           </div>
         </article>
 
-        <!-- CASO 02 · HARDWARE CATALOG SAAS -->
+        <!-- CASO 02 · GONDOFY (código privado: sin enlaces) -->
         <article class="case rv" id="caso-saas" style="--case:#2b55c4; --case-dk:#6b8ef2">
           <div class="case-head">
             <div class="case-no">
@@ -224,7 +230,7 @@
               <strong>Nº 02</strong>
             </div>
             <div class="case-title">
-              <h3 data-i18n="cases.saas.name">Hardware Catalog SaaS</h3>
+              <h3 data-i18n="cases.saas.name">Gondofy</h3>
               <p class="case-tag" data-i18n="cases.saas.tag"></p>
             </div>
             <dl class="case-meta">
@@ -242,12 +248,9 @@
               <p class="case-origin" data-i18n="cases.saas.origin"></p>
               <ul class="chips">
                 <li>Laravel 13</li><li>PHP 8.3</li><li>Sanctum</li><li>MySQL</li><li>React 19</li>
-                <li>TypeScript</li><li>TanStack Query</li><li>Zustand</li><li>Cloudflare R2</li>
+                <li>TypeScript</li><li>TanStack Query</li><li>Zustand</li><li>Vitest</li>
+                <li>Cloudflare R2</li><li>Sentry</li>
               </ul>
-              <div class="case-links">
-                <a class="pin-link" data-link="saas.demo"><span data-i18n="links.demo"></span> <span class="arr">↗</span></a>
-                <a class="pin-link" data-link="saas.code"><span data-i18n="links.code"></span> <span class="arr">↗</span></a>
-              </div>
             </div>
             <div class="case-media">
               <div class="carousel" data-carousel="saas"></div>
@@ -421,7 +424,7 @@
               <p class="case-origin" data-i18n="cases.bitacora.origin"></p>
               <ul class="chips">
                 <li>React</li><li>TypeScript</li><li>Vite</li><li>Tailwind</li>
-                <li>Supabase</li><li>PostgreSQL</li>
+                <li>Express</li><li>PostgreSQL · Neon</li><li>Drizzle</li><li>Vitest</li>
               </ul>
               <div class="case-links">
                 <a class="pin-link" data-link="bitacora.demo"><span data-i18n="links.demo"></span> <span class="arr">↗</span></a>
@@ -444,6 +447,97 @@
           </div>
         </article>
 
+        <!-- CASO 07 · PIPELINE EDITORIAL CON MCP (sin capturas: son herramientas sin interfaz) -->
+        <article class="case case-nocar rv" id="caso-mcp" style="--case:#6247aa; --case-dk:#a48ef0">
+          <div class="case-head">
+            <div class="case-no">
+              <span class="lbl mono" data-i18n="caseLbl">Caso</span>
+              <strong>Nº 07</strong>
+            </div>
+            <div class="case-title">
+              <h3 data-i18n="cases.mcp.name">Pipeline editorial con MCP</h3>
+              <p class="case-tag" data-i18n="cases.mcp.tag"></p>
+            </div>
+            <dl class="case-meta">
+              <div><dt data-i18n="meta_labels.year"></dt><dd data-i18n="cases.mcp.year"></dd></div>
+              <div><dt data-i18n="meta_labels.role"></dt><dd data-i18n="cases.mcp.role"></dd></div>
+              <div><dt data-i18n="meta_labels.type"></dt><dd data-i18n="cases.mcp.type"></dd></div>
+              <div><dt data-i18n="meta_labels.status"></dt><dd data-i18n="cases.mcp.status"></dd></div>
+            </dl>
+          </div>
+          <div class="case-body">
+            <div class="case-copy">
+              <p data-i18n="cases.mcp.p1"></p>
+              <p data-i18n="cases.mcp.p2"></p>
+              <ul class="case-notes" data-i18n-list="cases.mcp.notes"></ul>
+              <p class="case-origin" data-i18n="cases.mcp.origin"></p>
+              <ul class="chips">
+                <li>Python</li><li>FastMCP</li><li>Model Context Protocol</li><li>httpx</li>
+                <li>pytrends</li><li>pandas</li><li>Pillow</li><li>WordPress REST</li>
+              </ul>
+              <div class="case-links">
+                <a class="pin-link" data-link="mcp.codeTrends"><span data-i18n="cases.mcp.codeTrends"></span> <span class="arr">↗</span></a>
+                <a class="pin-link" data-link="mcp.codeImg"><span data-i18n="cases.mcp.codeImg"></span> <span class="arr">↗</span></a>
+              </div>
+            </div>
+            <div class="case-media">
+              <figure class="vignette vignette-tall">
+                <figcaption class="vignette-head mono">
+                  <span class="pulse" aria-hidden="true"></span>
+                  <span data-i18n="vignette.badge"></span>
+                  <span class="vtitle" data-i18n="cases.mcp.vig"></span>
+                </figcaption>
+                <div class="vignette-stage" data-vignette="mcp"></div>
+              </figure>
+            </div>
+          </div>
+        </article>
+
+        <!-- CASO 08 · EMBUDO DE VENTAS POR WHATSAPP (prototipo) -->
+        <article class="case case-nocar rv" id="caso-bot" style="--case:#1d7f5c; --case-dk:#45c595">
+          <div class="case-head">
+            <div class="case-no">
+              <span class="lbl mono" data-i18n="caseLbl">Caso</span>
+              <strong>Nº 08</strong>
+            </div>
+            <div class="case-title">
+              <h3 data-i18n="cases.bot.name">Embudo de ventas por WhatsApp</h3>
+              <p class="case-tag" data-i18n="cases.bot.tag"></p>
+            </div>
+            <dl class="case-meta">
+              <div><dt data-i18n="meta_labels.year"></dt><dd data-i18n="cases.bot.year"></dd></div>
+              <div><dt data-i18n="meta_labels.role"></dt><dd data-i18n="cases.bot.role"></dd></div>
+              <div><dt data-i18n="meta_labels.type"></dt><dd data-i18n="cases.bot.type"></dd></div>
+              <div><dt data-i18n="meta_labels.status"></dt><dd data-i18n="cases.bot.status"></dd></div>
+            </dl>
+          </div>
+          <div class="case-body">
+            <div class="case-copy">
+              <p data-i18n="cases.bot.p1"></p>
+              <p data-i18n="cases.bot.p2"></p>
+              <ul class="case-notes" data-i18n-list="cases.bot.notes"></ul>
+              <p class="case-origin" data-i18n="cases.bot.origin"></p>
+              <ul class="chips">
+                <li>TypeScript</li><li>Node.js</li><li>Fastify</li><li>Prisma</li><li>SQLite</li>
+                <li>Zod</li><li>Vitest</li><li>WhatsApp Cloud API</li><li>Payphone</li><li>HubSpot</li>
+              </ul>
+              <div class="case-links">
+                <a class="pin-link" data-link="bot.code"><span data-i18n="links.code"></span> <span class="arr">↗</span></a>
+              </div>
+            </div>
+            <div class="case-media">
+              <figure class="vignette vignette-tall">
+                <figcaption class="vignette-head mono">
+                  <span class="pulse" aria-hidden="true"></span>
+                  <span data-i18n="vignette.badge"></span>
+                  <span class="vtitle" data-i18n="cases.bot.vig"></span>
+                </figcaption>
+                <div class="vignette-stage" data-vignette="bot"></div>
+              </figure>
+            </div>
+          </div>
+        </article>
+
         <div class="folio mono">
           <span data-i18n="folio">Folio</span>
           <span>02 · <span data-i18n="sec.projects">Proyectos</span></span>
@@ -451,18 +545,115 @@
       </div>
     </section>
 
-    <!-- ============ SEC. 03 — STACK ============ -->
-    <section id="stack" class="section">
+    <!-- ============ SEC. 03 — DESARROLLO CON IA ============ -->
+    <section id="ia" class="section">
       <div class="wrap">
         <div class="rule-double"></div>
         <header class="sec-head rv">
           <span class="sec-no mono">Sec. 03</span>
+          <h2 data-i18n="sec.ai">Desarrollo con IA</h2>
+          <p class="sec-intro" data-i18n="sec.aiIntro"></p>
+        </header>
+
+        <div class="ai-top rv">
+          <div class="ai-intro">
+            <p class="lead" data-i18n-html="ai.lead"></p>
+            <dl class="spec-list">
+              <div class="spec-row">
+                <dt class="mono" data-i18n="ai.a1k"></dt><span class="dots"></span>
+                <dd data-i18n="ai.a1v"></dd>
+              </div>
+              <div class="spec-row">
+                <dt class="mono" data-i18n="ai.a2k"></dt><span class="dots"></span>
+                <dd data-i18n="ai.a2v"></dd>
+              </div>
+              <div class="spec-row">
+                <dt class="mono" data-i18n="ai.a3k"></dt><span class="dots"></span>
+                <dd data-i18n="ai.a3v"></dd>
+              </div>
+              <div class="spec-row">
+                <dt class="mono" data-i18n="ai.a4k"></dt><span class="dots"></span>
+                <dd data-i18n="ai.a4v"></dd>
+              </div>
+            </dl>
+          </div>
+          <figure class="vignette ai-vig">
+            <figcaption class="vignette-head mono">
+              <span class="pulse" aria-hidden="true"></span>
+              <span data-i18n="vignette.badge"></span>
+              <span class="vtitle" data-i18n="ai.vigAgent"></span>
+            </figcaption>
+            <div class="vignette-stage" data-vignette="agent"></div>
+          </figure>
+        </div>
+
+        <ol class="ai-cards rv">
+          <li class="ai-card">
+            <span class="ai-card-no mono">A.1</span>
+            <h3 data-i18n="ai.c1t"></h3>
+            <p data-i18n="ai.c1p"></p>
+          </li>
+          <li class="ai-card">
+            <span class="ai-card-no mono">A.2</span>
+            <h3 data-i18n="ai.c2t"></h3>
+            <p data-i18n="ai.c2p"></p>
+          </li>
+          <li class="ai-card">
+            <span class="ai-card-no mono">A.3</span>
+            <h3 data-i18n="ai.c3t"></h3>
+            <p data-i18n="ai.c3p"></p>
+          </li>
+          <li class="ai-card">
+            <span class="ai-card-no mono">A.4</span>
+            <h3 data-i18n="ai.c4t"></h3>
+            <p data-i18n="ai.c4p"></p>
+          </li>
+        </ol>
+
+        <div class="ai-bottom rv">
+          <figure class="vignette ai-vig">
+            <figcaption class="vignette-head mono">
+              <span class="pulse" aria-hidden="true"></span>
+              <span data-i18n="vignette.badge"></span>
+              <span class="vtitle" data-i18n="ai.vigLayers"></span>
+            </figcaption>
+            <div class="vignette-stage" data-vignette="layers"></div>
+          </figure>
+          <article class="ai-doc">
+            <p class="ai-doc-lbl mono" data-i18n="ai.docLbl"></p>
+            <div class="ai-doc-body" data-i18n-html="ai.doc"></div>
+          </article>
+        </div>
+
+        <div class="folio mono">
+          <span data-i18n="folio">Folio</span>
+          <span>03 · <span data-i18n="sec.ai">Desarrollo con IA</span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SEC. 04 — STACK ============ -->
+    <section id="stack" class="section">
+      <div class="wrap">
+        <div class="rule-double"></div>
+        <header class="sec-head rv">
+          <span class="sec-no mono">Sec. 04</span>
           <h2 data-i18n="sec.stack">Stack</h2>
           <p class="sec-intro" data-i18n="sec.stackIntro"></p>
         </header>
       </div>
 
       <div class="stack-rows">
+        <div class="stack-row rv">
+          <div class="wrap">
+            <p class="stack-row-label mono" data-i18n="stackRows.ai"></p>
+            <div class="marquee-shell">
+              <button type="button" class="marquee-nav marquee-prev" data-a11y="a11y.stackPrev">&#8592;</button>
+              <div class="marquee" data-marquee="ai" data-rev tabindex="0"></div>
+              <button type="button" class="marquee-nav marquee-next" data-a11y="a11y.stackNext">&#8594;</button>
+            </div>
+          </div>
+        </div>
         <div class="stack-row rv">
           <div class="wrap">
             <p class="stack-row-label mono" data-i18n="stackRows.front"></p>
@@ -498,17 +689,17 @@
       <div class="wrap">
         <div class="folio mono">
           <span data-i18n="folio">Folio</span>
-          <span>03 · <span data-i18n="sec.stack">Stack</span></span>
+          <span>04 · <span data-i18n="sec.stack">Stack</span></span>
         </div>
       </div>
     </section>
 
-    <!-- ============ SEC. 04 — TRAYECTORIA ============ -->
+    <!-- ============ SEC. 05 — TRAYECTORIA ============ -->
     <section id="experiencia" class="section">
       <div class="wrap">
         <div class="rule-double"></div>
         <header class="sec-head rv">
-          <span class="sec-no mono">Sec. 04</span>
+          <span class="sec-no mono">Sec. 05</span>
           <h2 data-i18n="sec.exp">Trayectoria</h2>
           <p class="sec-intro" data-i18n="sec.expIntro"></p>
         </header>
@@ -565,17 +756,17 @@
 
         <div class="folio mono">
           <span data-i18n="folio">Folio</span>
-          <span>04 · <span data-i18n="sec.exp">Trayectoria</span></span>
+          <span>05 · <span data-i18n="sec.exp">Trayectoria</span></span>
         </div>
       </div>
     </section>
 
-    <!-- ============ SEC. 05 — CONTACTO ============ -->
+    <!-- ============ SEC. 06 — CONTACTO ============ -->
     <section id="contacto" class="section">
       <div class="wrap">
         <div class="rule-double"></div>
         <header class="sec-head rv">
-          <span class="sec-no mono">Sec. 05</span>
+          <span class="sec-no mono">Sec. 06</span>
           <h2 data-i18n="sec.contact">Contacto</h2>
         </header>
 

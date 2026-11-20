@@ -11,3 +11,6 @@ node_modules/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Documentación de trabajo (local, no se versiona)
+docs/

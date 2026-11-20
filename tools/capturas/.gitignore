@@ -1,0 +1,6 @@
+node_modules/
+# Usuarios y contraseñas de las cuentas de prueba de cada proyecto
+credenciales.local.json
+# Video de prueba de Mediora (NASA, dominio publico, 23 MB): se descarga con
+#   curl -L -o fijos/tierra-de-noche.mp4 "https://images-assets.nasa.gov/video/GSFC_20170412_Lights_m12573_EarthAtNight/GSFC_20170412_Lights_m12573_EarthAtNight~medium.mp4"
+fijos/*.mp4
